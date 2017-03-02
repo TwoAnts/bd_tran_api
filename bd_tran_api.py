@@ -59,7 +59,7 @@ class BdTranClient:
         url = self.url+'?appid='+self.appid+'&q='+urllib.parse.quote(q)\
                 +'&from='+from_lang+'&to='+to_lang\
                 +'&salt='+str(salt)+'&sign='+sign
-        print('%s %s %s' %(q, from_lang, to_lang))
+        #print('%s %s %s' %(q, from_lang, to_lang))
             
         try:
             self.client.request('GET', url)
@@ -70,7 +70,8 @@ class BdTranClient:
            
         except Exception as e:
             print(traceback.format_exc())
-            return None
+        
+        return None
         
 if __name__ == '__main__':
     tran_client = BdTranClient(APPID, SECRET_KEY, from_lang='jp')
