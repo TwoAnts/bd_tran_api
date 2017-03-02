@@ -64,7 +64,7 @@ class BdTranClient:
         try:
             self.client.request('GET', url)
             response = self.client.getresponse()
-            resp = json.loads(response.read())
+            resp = json.loads(response.read().decode('utf-8'))
             trans_result = resp['trans_result'][0]
             return trans_result['dst']
            
