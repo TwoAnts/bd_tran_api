@@ -67,8 +67,10 @@ class BdTranClient:
                 self.client.request('GET', url)
                 response = self.client.getresponse()
                 resp = json.loads(response.read().decode('utf-8'))
-                trans_result = resp['trans_result'][0]
-                return trans_result['dst']
+                r = []
+                for tr in resp['trans_result']:
+                    r.append(tr['dst'])
+                return ','.join(r)
             except Exception as e:
                 except_msg = traceback.format_exc()
         

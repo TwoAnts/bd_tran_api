@@ -16,8 +16,11 @@ if __name__ == '__main__':
          )
          
     while True:
-        in_str = input('>>>')
+        in_str = input('>>> ')
+        
+        in_str = in_str.strip() if in_str is not None else None
         if in_str in ('exit', 'quit'): break
+        if not in_str: continue 
         
         dst = client.trans(in_str)
         print(dst)
