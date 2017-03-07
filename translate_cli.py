@@ -15,7 +15,6 @@ if __name__ == '__main__':
             client.get_option('to_lang'))\
          )
          
-    in_str = None
     while True:
         in_str = input('>>>')
         if in_str in ('exit', 'quit'): break

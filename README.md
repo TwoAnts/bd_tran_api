@@ -12,7 +12,7 @@ Python version must be 3.x.
     ```
     
 2. Just run `python3 translate_cli.py`  
-    or write your script using `BdTranClient`.
+    or write your own script using `BdTranClient`.
  
 
 Just enjoy it! :)
