@@ -57,17 +57,22 @@ class BdTranClient:
                 +'&from='+from_lang+'&to='+to_lang\
                 +'&salt='+str(salt)+'&sign='+sign
         #print('%s %s %s' %(q, from_lang, to_lang))
-            
-        try:
-            self.client.request('GET', url)
-            response = self.client.getresponse()
-            resp = json.loads(response.read().decode('utf-8'))
-            trans_result = resp['trans_result'][0]
-            return trans_result['dst']
-           
-        except Exception as e:
-            print(traceback.format_exc())
         
+
+        try_times = 0
+        except_msg = None
+        while try_times < 3:
+            try_times += 1
+            try:
+                self.client.request('GET', url)
+                response = self.client.getresponse()
+                resp = json.loads(response.read().decode('utf-8'))
+                trans_result = resp['trans_result'][0]
+                return trans_result['dst']
+            except Exception as e:
+                except_msg = traceback.format_exc()
+        
+        print('Try %s times, but failed.\n%s' %(try_times, except_msg))
         return None
         
 if __name__ == '__main__':
