@@ -13,9 +13,6 @@ QP_SET = set(['from_lang', 'to_lang'])
 TRAN_SITE = 'api.fanyi.baidu.com'
 TRAN_URL = '/api/trans/vip/translate'
 
-APPID = '20170302000040187'
-SECRET_KEY = 'qM5ZHlRVQX84tBkzBW3n'
-
 class BdTranClient:
     def __init__(self, appid, secret_key, **kwargs):
         self.url = TRAN_URL
@@ -74,6 +71,12 @@ class BdTranClient:
         return None
         
 if __name__ == '__main__':
+    from util import load_config
+    
+    config = load_config()
+    APPID = config['APPID']
+    SECRET_KEY = config['SECRET_KEY']
+    
     tran_client = BdTranClient(APPID, SECRET_KEY, from_lang='jp')
     dst = tran_client.trans(u'笑顔')
     print(dst)
