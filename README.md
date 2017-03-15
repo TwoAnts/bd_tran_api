@@ -1,9 +1,9 @@
-#README#
+# README #  
 This python script can do translation using Baidu translation API.  
 You just need a Baidu \<APPID\> and \<SECRET_KEY\>.  
 Python version must be 3.x.
 
-##How to##
+## How to ##  
 1. Write your \<APPID\> and \<SECRET_KEY\> to `config.txt`.  
     ```
     #config.txt
