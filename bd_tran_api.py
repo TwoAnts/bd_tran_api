@@ -8,7 +8,12 @@ import hashlib
 import urllib.parse
 import random
 
-QP_SET = set(['from_lang', 'to_lang'])
+LANG_SET = set(('auto', 'zh', 'en', 'yue', 'wyw', 'jp', 'kor',
+    'fra', 'spa', 'th', 'ara', 'ru', 'pt', 'de', 'it', 'el', 'nl',
+    'pl', 'bul', 'est', 'dan', 'fin', 'cs', 'rom', 'slo', 'swe',
+    'hu', 'cht', 'vie'))
+
+QP_SET = set(('from_lang', 'to_lang'))
 
 TRAN_SITE = 'api.fanyi.baidu.com'
 TRAN_URL = '/api/trans/vip/translate'
@@ -26,6 +31,8 @@ class BdTranClient:
     def update_option(self, key, value):
         if key not in QP_SET:
             raise ValueError('Unsupport option: %s' %key, 'in BdTranClient')
+        if key in ('from_lang', 'to_lang') and value not in LANG_SET:
+            raise ValueError('Unsupport language: %s' %value, 'in BdTranClient')
         
         self.options[key] = value
         
@@ -48,8 +55,10 @@ class BdTranClient:
         q = content
         from_lang = self.__get_opt__('from_lang', opts=kwargs)
         to_lang = self.__get_opt__('to_lang', opts=kwargs)
+        if from_lang not in LANG_SET or to_lang not in LANG_SET:
+            raise ValueError('Unsupport language: %s->%s' %(from_lang, to_lang), 'in BdTranClient')
+            
         salt = random.randint(32768, 65536)
-        
         sign = self.appid+q+str(salt)+self.secret_key
         sign = hashlib.md5(sign.encode('utf-8')).hexdigest()
         
