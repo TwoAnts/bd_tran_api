@@ -23,7 +23,7 @@ Python version must be 3.x.
     to_lang=zh
     ```
 
-- Use `> [<from_lang>],<to_lang> ....` to specific language once.  
+- Use `> [<from_lang>,]<to_lang> ....` to specific language once.  
     ```
     >>> >en,zh hello
     你好
