@@ -7,6 +7,9 @@ import json
 import hashlib
 import urllib.parse
 import random
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 LANG_SET = set(('auto', 'zh', 'en', 'yue', 'wyw', 'jp', 'kor',
     'fra', 'spa', 'th', 'ara', 'ru', 'pt', 'de', 'it', 'el', 'nl',
@@ -80,10 +83,19 @@ class BdTranClient:
                 for tr in resp['trans_result']:
                     r.append(tr['dst'])
                 return ','.join(r)
+            except http.client.CannotSendRequest as e:
+                logging.info(e)
+                if except_msg is None: except_msg = []
+                except_msg.append(traceback.format_exc())
+                #Here should getresponse for previous request
+                self.client.getresponse()
             except Exception as e:
-                except_msg = traceback.format_exc()
+                logging.debug(e)
+                if except_msg is None: except_msg = []
+                except_msg.append(traceback.format_exc())
+                self.client.close()
         
-        print('Try %s times, but failed.\n%s' %(try_times, except_msg))
+        print('Try %s times, but failed.\n%s' %(try_times, '\n'.join(except_msg)))
         return None
         
 if __name__ == '__main__':
