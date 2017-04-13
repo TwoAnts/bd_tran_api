@@ -15,11 +15,16 @@ Python version must be 3.x.
     or write your own script using `BdTranClient`.  
 
 ## CLI Usage ##  
+Just run `python3 translate_cli.py` to start cli.  
+
 - Use set and get for options.  
     `set <key> = <value>` or `get <key>`.
     ```
     >>> set from_lang = jp
     >>> get to_lang
+    to_lang=zh
+    >>> get status
+    from_lang=en
     to_lang=zh
     ```
 
