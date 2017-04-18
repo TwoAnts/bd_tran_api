@@ -29,7 +29,8 @@ class BdTranClient:
         self.options = {'from_lang':'en', 'to_lang':'zh'}
         for key in QP_SET:
             if key in kwargs: self.options[key] = kwargs[key]
-        self.client = http.client.HTTPConnection(TRAN_SITE)
+        self.client = None
+        self.init_client()
         
     def update_option(self, key, value):
         if key not in QP_SET:
@@ -51,8 +52,14 @@ class BdTranClient:
         
         return self.options.get(key, default)
         
+    def init_client(self):
+        if self.client: self.client.close()
+        self.client = http.client.HTTPConnection(TRAN_SITE)
+        
     def close(self):
-        self.client.close()
+        if self.client:
+            self.client.close()
+            self.client = None
         
     def trans(self, content, **kwargs):
         q = content
@@ -88,7 +95,7 @@ class BdTranClient:
                 if except_msg is None: except_msg = []
                 except_msg.append(traceback.format_exc())
                 #Here should getresponse for previous request
-                self.client.getresponse()
+                self.init_client()
             except Exception as e:
                 logging.debug(e)
                 if except_msg is None: except_msg = []
