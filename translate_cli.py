@@ -24,6 +24,8 @@ if __name__ == '__main__':
     while True:
         in_str = input('>>> ')
         
+        if in_str in ('exit', 'quit'): break
+        
         #match 'get <key>' or 'set <key> = <value>'
         m = OPT_PATTERN.match(in_str)
         if m:
@@ -53,8 +55,6 @@ if __name__ == '__main__':
                 options['to_lang'] = m.group(1)
             
             in_str = in_str[m.end():]
-        
-                
             
         #When your sentence has \n, use " or '. 
         if in_str and in_str[0] in ('\'', '\"'):
@@ -69,10 +69,7 @@ if __name__ == '__main__':
             
             in_str = ' '.join(str_list)[1:-1]
             
-        
-        if in_str in ('exit', 'quit'): break
         if not in_str: continue 
-        
         
         dst = client.trans(in_str, **options)
         if options: options.clear()
