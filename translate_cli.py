@@ -34,6 +34,8 @@ if __name__ == '__main__':
                     if m.group('key') == 'status':
                         for k,v in client.options.items():
                             print('%s=%s' %(k, v))
+                    elif m.group('key') == 'langs':
+                        print(client.LANG_SET)
                     else:
                         print('%s=%s' %(m.group('key'), client.get_option(m.group('key'))))
                 elif m.group('set'):

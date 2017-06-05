@@ -22,6 +22,7 @@ TRAN_SITE = 'api.fanyi.baidu.com'
 TRAN_URL = '/api/trans/vip/translate'
 
 class BdTranClient:
+    LANG_SET = LANG_SET
     def __init__(self, appid, secret_key, **kwargs):
         self.url = TRAN_URL
         self.appid = appid
