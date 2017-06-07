@@ -24,7 +24,7 @@ Just run `python3 translate_cli.py` to start cli.
     >>> get to_lang
     to_lang=zh
     >>> get status
-    from_lang=en
+    from_lang=jp
     to_lang=zh
     ```
 
