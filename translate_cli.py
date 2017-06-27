@@ -3,7 +3,16 @@
 
 from bd_tran_api import BdTranClient
 
-import re
+import re, time, sys
+from concurrent.futures import ThreadPoolExecutor
+
+def loopstr(count):
+    LIST = ('\\', '|', '/', '-')
+    return LIST[count%len(LIST)]
+    
+
+_executor = ThreadPoolExecutor(max_workers=1)
+
 
 ONCE_OPT_PATTERN = re.compile('^\s*>\s*([a-z]+)(\s*,\s*(?P<to_lang>[a-z]+))?\s*')
 OPT_PATTERN = re.compile('^\s*((?P<get>get)|(?P<set>set))\s+(?P<key>\w+)\s*(?(set)=\s*(?P<value>\w+)\s*)$')
@@ -73,9 +82,18 @@ if __name__ == '__main__':
             
         if not in_str: continue 
         
-        dst = client.trans(in_str, **options)
+        future = _executor.submit(client.trans, in_str, **options)
+        
+        delay = 0.1
+        counter = 0
+        while not future.done():
+            time.sleep(delay)
+            counter += 1
+            sys.stdout.write('\r  < %s\r' %loopstr(counter//3))
+        if counter: sys.stdout.write('%s\r' %(' '*5, ))
+            
         if options: options.clear()
         
-        print(dst)
+        print(future.result())
         
     
