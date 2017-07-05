@@ -1,6 +1,7 @@
 # README #  
 This python script can do translation using Baidu translation API.  
 You just need a Baidu \<APPID\> and \<SECRET_KEY\>.  
+You can get these from <http://api.fanyi.baidu.com>.  
 Python version must be 3.x.
 
 ## How to ##  
