@@ -25,37 +25,50 @@ if __name__ == '__main__':
     SECRET_KEY = config['SECRET_KEY']
     
     client = BdTranClient(APPID, SECRET_KEY)
-    print('Start trans from %s to %s:' %(client.get_option('from_lang'),\
-            client.get_option('to_lang'))\
-         )
+    print('Start trans from %s to %s:' %(
+                client.get_option('from_lang'),
+                client.get_option('to_lang')
+            )
+    )
     
+    cli_options = dict(
+        multiline = False,
+    )
     options = {}
     while True:
         in_str = input('>>> ')
         
         if in_str in ('exit', 'quit'): break
         
-        #match 'get <key>' or 'set <key> = <value>'
+        #Match 'get <key>' or 'set <key> = <value>'
         m = OPT_PATTERN.match(in_str)
         if m:
             try:
                 if m.group('get'):
                     if m.group('key') == 'status':
+                        for k,v in cli_options.items():
+                            print('%s=%s' %(k, v))
                         for k,v in client.options.items():
                             print('%s=%s' %(k, v))
+                    elif m.group('key') in ('multi, ''multiline'):
+                        print('%s=%s' %('multiline', cli_options['multiline']))
                     elif m.group('key') == 'langs':
                         print(client.LANG_SET)
                     else:
                         print('%s=%s' %(m.group('key'), client.get_option(m.group('key'))))
                 elif m.group('set'):
-                    client.update_option(m.group('key'), m.group('value'))
+                    if m.group('key') in ('multi', 'multiline'):
+                        cli_options['multiline'] = (m.group('value').lower() in ('yes', 'true', 'on', 'y'))
+                        print('%s=%s' %('multiline', cli_options['multiline']))
+                    else:
+                        client.update_option(m.group('key'), m.group('value'))
             except Exception as e:
                 print(e)
             continue
         
         in_str = in_str.strip()
         
-        #specific from_lang and to_lang for translate_call once.
+        #Specific from_lang and to_lang for translate_call once.
         m = ONCE_OPT_PATTERN.search(in_str)
         if m: 
             if m.group('to_lang'):
@@ -81,6 +94,20 @@ if __name__ == '__main__':
             in_str = ' '.join(str_list)[1:-1]
             
         if not in_str: continue 
+        
+        #Enter multiline mode when setted.
+        if cli_options['multiline']:
+            str_list = [in_str]
+            empty_counter = 0
+            while empty_counter < 1:
+                in_str = input('>    ')
+                if not in_str: 
+                    empty_counter += 1
+                    continue
+                empty_counter = 0
+                in_str = in_str.strip()
+                str_list.append(in_str)
+            in_str = ' '.join(str_list)
         
         future = _executor.submit(client.trans, in_str, **options)
         
