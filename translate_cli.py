@@ -3,7 +3,11 @@
 
 from bd_tran_api import BdTranClient
 
-import re, time, sys
+import re
+import time
+import sys
+import queue
+import threading
 from concurrent.futures import ThreadPoolExecutor
 
 def loopstr(count):
@@ -13,10 +17,23 @@ def loopstr(count):
 
 _executor = ThreadPoolExecutor(max_workers=1)
 
-
 ONCE_OPT_PATTERN = re.compile('^\s*>\s*([a-z]+)(\s*,\s*(?P<to_lang>[a-z]+))?\s*')
 OPT_PATTERN = re.compile('^\s*((?P<get>get)|(?P<set>set))\s+(?P<key>\w+)\s*(?(set)=\s*(?P<value>\w+)\s*)$')
 
+def multi_line_cli(first_in_str):
+    str_list = [first_in_str]
+    empty_counter = 0
+    while empty_counter < 1:
+        in_str = input('>    ')
+        if not in_str: 
+            empty_counter += 1
+            continue
+        empty_counter = 0
+        in_str = in_str.strip()
+        str_list.append(in_str)
+    return ' '.join(str_list)
+    
+    
 if __name__ == '__main__':
     from util import load_config
     config = load_config()
@@ -32,10 +49,16 @@ if __name__ == '__main__':
     )
     
     cli_options = dict(
+    #    auto_multiline = True, #No any effect now.
         multiline = False,
     )
+    cli_options_alias2key =  {
+        'multi': 'multiline',
+    #    'auto_multi': 'auto_multiline',
+    }
     options = {}
     while True:
+        
         in_str = input('>>> ')
         
         if in_str in ('exit', 'quit'): break
@@ -44,24 +67,26 @@ if __name__ == '__main__':
         m = OPT_PATTERN.match(in_str)
         if m:
             try:
+                key = m.group('key')
+                key = cli_options_alias2key.get(key, key)
                 if m.group('get'):
-                    if m.group('key') == 'status':
+                    if key == 'status':
                         for k,v in cli_options.items():
                             print('%s=%s' %(k, v))
                         for k,v in client.options.items():
                             print('%s=%s' %(k, v))
-                    elif m.group('key') in ('multi, ''multiline'):
-                        print('%s=%s' %('multiline', cli_options['multiline']))
-                    elif m.group('key') == 'langs':
+                    elif key in ('multiline', 'auto_multiline'):
+                        print('%s=%s' %(key, cli_options[key]))
+                    elif key == 'langs':
                         print(client.LANG_SET)
                     else:
-                        print('%s=%s' %(m.group('key'), client.get_option(m.group('key'))))
+                        print('%s=%s' %(key, client.get_option(key)))
                 elif m.group('set'):
-                    if m.group('key') in ('multi', 'multiline'):
-                        cli_options['multiline'] = (m.group('value').lower() in ('yes', 'true', 'on', 'y'))
-                        print('%s=%s' %('multiline', cli_options['multiline']))
+                    if key in ('multiline', 'auto_multiline'):
+                        cli_options[key] = (m.group('value').lower() in ('yes', 'true', 'on', 'y'))
+                        print('%s=%s' %(key, cli_options[key]))
                     else:
-                        client.update_option(m.group('key'), m.group('value'))
+                        client.update_option(key, m.group('value'))
             except Exception as e:
                 print(e)
             continue
@@ -95,8 +120,8 @@ if __name__ == '__main__':
             
         if not in_str: continue 
         
-        #Enter multiline mode when setted.
-        if cli_options['multiline']:
+        #Multiline mode if needed.
+        if cli_options['multiline']: #Enter multiline mode when setted.
             str_list = [in_str]
             empty_counter = 0
             while empty_counter < 1:
@@ -108,6 +133,7 @@ if __name__ == '__main__':
                 in_str = in_str.strip()
                 str_list.append(in_str)
             in_str = ' '.join(str_list)
+            
         
         future = _executor.submit(client.trans, in_str, **options)
         
@@ -122,5 +148,6 @@ if __name__ == '__main__':
         if options: options.clear()
         
         print(future.result())
+        
         
     
