@@ -19,19 +19,6 @@ _executor = ThreadPoolExecutor(max_workers=1)
 
 ONCE_OPT_PATTERN = re.compile('^\s*>\s*([a-z]+)(\s*,\s*(?P<to_lang>[a-z]+))?\s*')
 OPT_PATTERN = re.compile('^\s*((?P<get>get)|(?P<set>set))\s+(?P<key>\w+)\s*(?(set)=\s*(?P<value>\w+)\s*)$')
-
-def multi_line_cli(first_in_str):
-    str_list = [first_in_str]
-    empty_counter = 0
-    while empty_counter < 1:
-        in_str = input('>    ')
-        if not in_str: 
-            empty_counter += 1
-            continue
-        empty_counter = 0
-        in_str = in_str.strip()
-        str_list.append(in_str)
-    return ' '.join(str_list)
     
     
 if __name__ == '__main__':
