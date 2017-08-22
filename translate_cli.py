@@ -97,7 +97,7 @@ if __name__ == '__main__':
             quote = in_str[0]
             str_list = [in_str]
             while True:
-                in_str = input('>    ')
+                in_str = input(' >   ')
                 in_str = in_str.strip()
                 str_list.append(in_str)
                 if in_str and in_str[-1] == quote:
