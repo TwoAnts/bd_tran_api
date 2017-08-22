@@ -46,7 +46,7 @@ if __name__ == '__main__':
     options = {}
     while True:
         
-        in_str = input('>>> ')
+        in_str = input('B>> ')
         
         if in_str in ('exit', 'quit'): break
         
