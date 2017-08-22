@@ -21,28 +21,28 @@ Just run `python3 translate_cli.py` to start cli.
 - Use set and get for options.  
     `set <key> = <value>` or `get <key>`.
     ```
-    >>> set from_lang = jp
-    >>> get to_lang
+    B>> set from_lang = jp
+    B>> get to_lang
     to_lang=zh
-    >>> get status
+    B>> get status
     from_lang=jp
     to_lang=zh
     ```
 
 - Use `> [<from_lang>,]<to_lang> ....` to specific language once.  
     ```
-    >>> >en,zh hello
+    B>> >en,zh hello
     你好
-    >>> >en 你好    #from_lang is auto here.
+    B>> >en 你好    #from_lang is auto here.
     Hello,
     ```
 
 - Use ' or " when your sentence has \n.  
     ```
-    >>> 'This
-    >    sentence
-    >    has
-    >    \n.'
+    B>> 'This
+     >   sentence
+     >   has
+     >   \n.'
     这个句子有
     ```
     
