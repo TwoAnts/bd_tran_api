@@ -23,10 +23,11 @@ TRAN_URL = '/api/trans/vip/translate'
 
 class BdTranClient:
     LANG_SET = LANG_SET
-    def __init__(self, appid, secret_key, **kwargs):
+    def __init__(self, appid, secret_key, timeout=3, **kwargs):
         self.url = TRAN_URL
         self.appid = appid
         self.secret_key = secret_key
+        self.timeout = timeout
         self.options = {'from_lang':'en', 'to_lang':'zh'}
         for key in QP_SET:
             if key in kwargs: self.options[key] = kwargs[key]
@@ -55,7 +56,7 @@ class BdTranClient:
         
     def init_client(self):
         if self.client: self.client.close()
-        self.client = http.client.HTTPConnection(TRAN_SITE)
+        self.client = http.client.HTTPConnection(TRAN_SITE, timeout=self.timeout)
         
     def close(self):
         if self.client:

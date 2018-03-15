@@ -126,13 +126,19 @@ if __name__ == '__main__':
         
         delay = 0.1
         counter = 0
-        while not future.done():
-            time.sleep(delay)
-            counter += 1
-            sys.stdout.write('\r  < %s\r' %loopstr(counter//3))
-        if counter: sys.stdout.write('%s\r' %(' '*5, ))
+        try:
+            while not future.done():
+                time.sleep(delay)
+                counter += 1
+                sys.stdout.write('\r  < %s\r' %loopstr(counter//3))
+        except KeyboardInterrupt: #When ctrl+c pressed.
+            cr = future.cancel()
+            print('cancelled' if cr else 'cancel failed.')
+            continue
+        finally:
+            if options: options.clear()
             
-        if options: options.clear()
+        if counter: sys.stdout.write('%s\r' %(' '*5, ))
         
         print(future.result())
         
