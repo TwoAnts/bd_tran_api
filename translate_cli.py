@@ -105,8 +105,6 @@ if __name__ == '__main__':
             
             in_str = ' '.join(str_list)[1:-1]
             
-        if not in_str: continue 
-        
         #Multiline mode if needed.
         if cli_options['multiline']: #Enter multiline mode when setted.
             str_list = [in_str]
@@ -121,6 +119,7 @@ if __name__ == '__main__':
                 str_list.append(in_str)
             in_str = ' '.join(str_list)
             
+        if not in_str: continue 
         
         future = _executor.submit(client.trans, in_str, **options)
         
